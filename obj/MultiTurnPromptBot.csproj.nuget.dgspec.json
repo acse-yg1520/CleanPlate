@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\t-yunhaoguan\\Desktop\\05.multi-turn-prompt\\MultiTurnPromptBot.csproj": {}
+    "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\t-yunhaoguan\\Desktop\\05.multi-turn-prompt\\MultiTurnPromptBot.csproj": {
+    "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\t-yunhaoguan\\Desktop\\05.multi-turn-prompt\\MultiTurnPromptBot.csproj",
+        "projectUniqueName": "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj",
         "projectName": "MultiTurnPromptBot",
-        "projectPath": "C:\\Users\\t-yunhaoguan\\Desktop\\05.multi-turn-prompt\\MultiTurnPromptBot.csproj",
+        "projectPath": "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj",
         "packagesPath": "C:\\Users\\t-yunhaoguan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\t-yunhaoguan\\Desktop\\05.multi-turn-prompt\\obj\\",
+        "outputPath": "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\t-yunhaoguan\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -43,6 +43,10 @@
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
               "version": "[3.1.1, )"
+            },
+            "Microsoft.Azure.CognitiveServices.Vision.ComputerVision": {
+              "target": "Package",
+              "version": "[7.0.1, )"
             },
             "Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction": {
               "target": "Package",

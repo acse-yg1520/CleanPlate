@@ -12,15 +12,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using System.Security.Cryptography;
 using System.Text;
-//using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
-// using Microsoft.Extensions.Logging;
-// using Newtonsoft.Json.Linq;
-// using Microsoft.Extensions.Configuration;
-// using Microsoft.Bot.Builder.Azure;
-// using Microsoft.Azure.Cosmos;
-
-
+using Microsoft.BotBuilderSamples;
 
 
 
@@ -123,11 +116,11 @@ namespace Microsoft.BotBuilderSamples
                 new PromptOptions
                 {
                     Prompt = MessageFactory.Text("What operation would you like to perform?"),
-                    Choices = ChoiceFactory.ToChoices(new List<string> { "Plate Detection", "Points Query" }),
+                    Choices = ChoiceFactory.ToChoices(new List<string> { "Plate Detection", "Upload Bill","Points Query" }),
                 }, cancellationToken);
         }  
        
-        public string type = "True";
+        public string type = "0";
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             stepContext.Values["Operation"] = ((FoundChoice)stepContext.Result).Value;
@@ -140,7 +133,18 @@ namespace Microsoft.BotBuilderSamples
                     Prompt = MessageFactory.Text("Please upload a picture of your plate."),
                     RetryPrompt = MessageFactory.Text("Please make sure to upload a jpeg/png image file."),
                 };
-                type = "True";
+                type = "1";
+                return await stepContext.PromptAsync(nameof(AttachmentPrompt), promptOptions, cancellationToken);
+                 
+            }
+            else if ("Upload Bill".Equals(operation))
+            {
+               var promptOptions = new PromptOptions
+                {
+                    Prompt = MessageFactory.Text("Please upload the picture of your bill."),
+                    RetryPrompt = MessageFactory.Text("Please make sure to upload a jpeg/png image file."),
+                };
+                type = "2";
                 return await stepContext.PromptAsync(nameof(AttachmentPrompt), promptOptions, cancellationToken);
                  
             }
@@ -159,13 +163,13 @@ namespace Microsoft.BotBuilderSamples
                      await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You get {score} points."), cancellationToken);
                  }               
                    
-                type = "False";
+                type = "0";
                 //return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
                 return await stepContext.NextAsync(-1, cancellationToken);
             }
             else
             {
-                type = "False";
+                type = "0";
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("The selected option not found."), cancellationToken);
                 return await stepContext.NextAsync(-1, cancellationToken);
             }
@@ -175,11 +179,11 @@ namespace Microsoft.BotBuilderSamples
         private async Task<DialogTurnResult> DetectionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             
-            if (type == "False")
+            if (type.Equals("0"))
             {
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("Do you need other operations?") }, cancellationToken);
             }
-            else
+            else if (type.Equals("1"))
             {
                 var score = 0;
                 List<userScore> userScores = await _cosmosDBClient.QueryItemsAsync(Name, EndpointUri, PrimaryKey);
@@ -208,7 +212,13 @@ namespace Microsoft.BotBuilderSamples
                     {
                         webClient.DownloadFile(remoteFileUrl, localFileName);
                     }
-              
+                    
+                    var imageData = Convert.ToBase64String(File.ReadAllBytes(localFileName));
+                    var imagehash = ComputeMd5Hash(imageData);
+                    imageHash = imagehash;
+                    //var ifUnique = await _cosmosDBClient.CheckUniquenessAsync(EndpointUri, PrimaryKey, imageHash);
+                    
+                    //await  stepContext.Context.SendActivityAsync("Please make sure not to upload repetitive images.");
 
                     var predictions = await predictionApi.GetImagePredictionsAsync(file.Name);
                     if (predictions == "Clean")
@@ -216,7 +226,7 @@ namespace Microsoft.BotBuilderSamples
 
                         score += 5;
                         await  stepContext.Context.SendActivityAsync("Congratulations! You have finished all the food. You will get 5 points.");
-                        await _cosmosDBClient.AddItemsToContainerAsync(EndpointUri, PrimaryKey, Name, score);
+                        await _cosmosDBClient.AddItemsToContainerAsync(EndpointUri, PrimaryKey, Name, score, imagehash);
              
                     }
                     else
@@ -225,12 +235,55 @@ namespace Microsoft.BotBuilderSamples
                         
                     }
     
-                        //return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("Do you need other operations?") }, cancellationToken);
                 }
+            }
+            else if (type.Equals("2"))
+            {
+                List<Attachment> attachments = (List<Attachment>)stepContext.Result;
+                
+                foreach (var file in attachments)
+                {
+                 // Determine where the file is hosted.
+                    var remoteFileUrl = file.ContentUrl;
+
+                // Save the attachment to the system temp directory.
+                    var localFileName = Path.Combine(Path.GetTempPath(), file.Name);
+
+                // Download the actual attachment
+                    using (var webClient = new WebClient())
+                    {
+                        webClient.DownloadFile(remoteFileUrl, localFileName);
+                    }
+                    
+                  
+               // Extract text (OCR) from a URL image using the Read API
+                var ocr_list = await OCR_api.GetOcr(localFileName);
+                List<string> dish_list = new List<string>();
+                List<string> price_list = new List<string>();
+                List<int> idx = new List<int>();
+                
+                for (int i=0;i<ocr_list.Count; i++)
+                    { 
+                        if (ocr_list[i][0].ToString() == "*")
+                        {
+                           idx.Add(i);
+                        }  
+                    }
+                string total_spend = ocr_list[idx[1]+5];
+                int step = (idx[1]-1-idx[0])/idx[0];
+                for (int j = 1; j < step ; j++)
+                    {
+                        dish_list.Add(ocr_list[idx[0]+1+4*j]);
+                        price_list.Add(ocr_list[idx[0]+2+4*j]);        
+                    }
+                await _cosmosDBClient.AddBillsInfoToContainer(EndpointUri, PrimaryKey, Name, dish_list, price_list, total_spend);
+                }
+                 
+                
 
             }
 
-                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("Do you need other operations?") }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("Do you need other operations?") }, cancellationToken);
 
         }
 
@@ -278,38 +331,21 @@ namespace Microsoft.BotBuilderSamples
                 return true;
             }
         }
-
-
-        private async Task<bool> CheckUniqueAsync(PromptValidatorContext<IList<Attachment>> promptContext, CancellationToken cancellationToken)
-        {
-            if (promptContext.Recognized.Succeeded)
-            {   
-                
-                var attachments = promptContext.Recognized.Value;
-                var validImages = new List<Attachment>();
-                foreach (var attachment in attachments)
-                {   
-                   
-                   
-                    if ((attachment.ContentType == "image/jpeg" || attachment.ContentType == "image/png"))
-                    {  
-                        validImages.Add(attachment);
-                    }
-                }
-
-                promptContext.Recognized.Value = validImages;
-                //await promptContext.Context.SendActivityAsync($"{validImages.Name}");
-                // If none of the attachments are valid images, the retry prompt should be sent.
-                return validImages.Any();
-            }
-            else
-            {
-                await promptContext.Context.SendActivityAsync("No valid attachments received.");
-
-                // We can return true from a validator function even if Recognized.Succeeded is false.
-                return true;
-            }
-        }
+    public string ComputeMd5Hash(string message)
+	{
+	    using (MD5 md5 = MD5.Create())
+	    {
+	        byte[] input = Encoding.ASCII.GetBytes(message);
+	        byte[] hash = md5.ComputeHash(input);
+	
+	        StringBuilder st = new StringBuilder();
+	        for (int i = 0; i < hash.Length; i++)
+	        {
+	            st.Append(hash[i].ToString("X2"));
+	        }
+	        return st.ToString();
+	    }
+	}
 
         
     }

@@ -58,37 +58,37 @@ namespace Microsoft.BotBuilderSamples
         // </CreateContainerAsync>
 
 
-        // public async Task<bool> CheckUniquenessAsync(string EndpointUri, string PrimaryKey, string imageHash)
-        // {
-        //     this.cosmosClient = new CosmosClient(EndpointUri, PrimaryKey, new CosmosClientOptions() { ApplicationName = "CosmosDBDotnetQuickstart" });
-        //     this.container = this.cosmosClient.GetContainer("ChatBotDB", "Storage");
-        //     //Console.WriteLine(imageHash);
-        //     var sqlQueryText = $"SELECT c.id FROM c WHERE c.imageHash = '{imageHash}'";
+        public async Task<bool> CheckUniquenessAsync(string EndpointUri, string PrimaryKey, string imageHash)
+        {
+            this.cosmosClient = new CosmosClient(EndpointUri, PrimaryKey, new CosmosClientOptions() { ApplicationName = "CosmosDBDotnetQuickstart" });
+            this.container = this.cosmosClient.GetContainer("ChatBotDB", "Storage");
+            //Console.WriteLine(imageHash);
+            var sqlQueryText = $"SELECT c.id FROM c WHERE c.imageHash = '{imageHash}'";
 
-        //     Console.WriteLine("Running query: {0}\n", sqlQueryText);
+            Console.WriteLine("Running query: {0}\n", sqlQueryText);
 
-        //     QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
-        //     FeedIterator<userScore> queryResultSetIterator = this.container.GetItemQueryIterator<userScore>(queryDefinition);
+            QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);
+            FeedIterator<userScore> queryResultSetIterator = this.container.GetItemQueryIterator<userScore>(queryDefinition);
 
-        //     while (queryResultSetIterator.HasMoreResults)
-        //     {
-        //         FeedResponse<userScore> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-        //         Console.WriteLine(currentResultSet.Count);
-        //         if (currentResultSet.Count == 0)
-        //         {
-        //             return true;
+            while (queryResultSetIterator.HasMoreResults)
+            {
+                FeedResponse<userScore> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                Console.WriteLine(currentResultSet.Count);
+                if (currentResultSet.Count == 0)
+                {
+                    return true;
 
-        //         }
-        //         else
-        //         {
-        //             return false;
-        //         }
-        //     }
-        //     return false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
             
-        // }
+        }
     
-        public async Task AddItemsToContainerAsync(string EndpointUri, string PrimaryKey, string userId, int score)
+        public async Task AddItemsToContainerAsync(string EndpointUri, string PrimaryKey, string userId, int score, string imageHash)
         {
             this.cosmosClient = new CosmosClient(EndpointUri, PrimaryKey, new CosmosClientOptions() { ApplicationName = "CosmosDBDotnetQuickstart" });
             this.container = this.cosmosClient.GetContainer("ChatBotDB", "Storage");
@@ -96,6 +96,7 @@ namespace Microsoft.BotBuilderSamples
             {
                 Id = userId,
                 score = score,
+                imageHash = imageHash,
 
             };
 
@@ -105,6 +106,25 @@ namespace Microsoft.BotBuilderSamples
             
         }
         // </AddItemsToContainerAsync>
+
+        public async Task AddBillsInfoToContainer(string EndpointUri, string PrimaryKey, string userId, List<string> dishName , List<string> priceList, string spend)
+        {
+            this.cosmosClient = new CosmosClient(EndpointUri, PrimaryKey, new CosmosClientOptions() { ApplicationName = "CosmosDBDotnetQuickstart" });
+            this.container = this.cosmosClient.GetContainer("ChatBotDB", "DishInfo");
+            DishInfo dishInfo = new DishInfo
+            {
+                Id = userId,
+                dishName = dishName,
+                price = priceList,
+                spend = spend
+
+            };
+
+
+            ItemResponse<DishInfo> AddResponse = await this.container.UpsertItemAsync<DishInfo>(dishInfo, new PartitionKey(dishInfo.spend));
+
+            
+        }
     
         public async Task<List<userScore>> QueryItemsAsync(string userId, string EndpointUri, string PrimaryKey)
         {

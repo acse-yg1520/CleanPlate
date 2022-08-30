@@ -32,6 +32,7 @@
       "MultiTurnPromptBot/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "3.1.1",
+          "Microsoft.Azure.CognitiveServices.Vision.ComputerVision": "7.0.1",
           "Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction": "2.0.0",
           "Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training": "2.0.0",
           "Microsoft.Azure.KeyVault.Core": "3.0.5",
@@ -363,6 +364,23 @@
         },
         "compile": {
           "lib/netcoreapp3.1/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll": {}
+        }
+      },
+      "Microsoft.Azure.CognitiveServices.Vision.ComputerVision/7.0.1": {
+        "dependencies": {
+          "Microsoft.Rest.ClientRuntime": "2.3.21",
+          "Microsoft.Rest.ClientRuntime.Azure": "3.3.18",
+          "Newtonsoft.Json": "12.0.3",
+          "System.Net.Http": "4.3.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Azure.CognitiveServices.Vision.ComputerVision.dll": {
+            "assemblyVersion": "7.0.1.0",
+            "fileVersion": "7.0.121.56002"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Azure.CognitiveServices.Vision.ComputerVision.dll": {}
         }
       },
       "Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction/2.0.0": {
@@ -3782,6 +3800,13 @@
       "sha512": "sha512-t8vDVyivm/rnWvzvmVKGJUf7w8Mz1C4T3qnPAm0WyEU6LRt4WdLu4k1g8jVQ4qZTR7NDzv2DR0F2VSjZvkQdtQ==",
       "path": "microsoft.aspnetcore.mvc.newtonsoftjson/3.1.1",
       "hashPath": "microsoft.aspnetcore.mvc.newtonsoftjson.3.1.1.nupkg.sha512"
+    },
+    "Microsoft.Azure.CognitiveServices.Vision.ComputerVision/7.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KbyyhYy+uGoHVqPSsKMvqLc68juir5USFBVEDPgr0O9pBmxxp1Eau238+mIjHfn/4D6nGmRy7R+GxkxTZxdiYw==",
+      "path": "microsoft.azure.cognitiveservices.vision.computervision/7.0.1",
+      "hashPath": "microsoft.azure.cognitiveservices.vision.computervision.7.0.1.nupkg.sha512"
     },
     "Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction/2.0.0": {
       "type": "package",

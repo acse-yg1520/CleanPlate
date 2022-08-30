@@ -30,7 +30,7 @@ namespace Microsoft.BotBuilderSamples
         }
         public static async Task<string> GetImagePredictionsAsync(string fileName)
         {
-            CustomVisionPredictionClient predictionApi = AuthenticatePrediction(Endpoint, PredictionKey);
+          CustomVisionPredictionClient predictionApi = AuthenticatePrediction(Endpoint, PredictionKey);
             
             // Get predictions from the image
             //using (var imageStream = new FileStream(imageFile, FileMode.Open))

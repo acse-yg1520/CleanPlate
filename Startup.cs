@@ -48,6 +48,17 @@ namespace Microsoft.BotBuilderSamples
               // Register Cosmos DB Client
             services.AddSingleton<CosmosDBClient>();
         
+            // Use partitioned CosmosDB for storage, instead of in-memory storage.
+        //      services.AddSingleton<IStorage>(
+        //      new CosmosDbPartitionedStorage(
+        //         new CosmosDbPartitionedStorageOptions
+        //    {
+        //     CosmosDbEndpoint ="https://f0d58c44-0ee0-4-231-b9ee.documents.azure.com:443/",
+        //     AuthKey ="stYGaSXtlvr5mMQGB3oh4So4EEFypXfEdV2XUPlS0zpj5BZ14KSX7aSdAC7s9Q9mHPrF5WJ1NV45XZBM4vKOzA==",
+        //     DatabaseId = "ChatBotDB",
+        //     ContainerId ="botStorage",
+        //     CompatibilityMode = false,
+        //    }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
