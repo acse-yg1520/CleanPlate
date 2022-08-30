@@ -24,47 +24,6 @@ namespace Microsoft.BotBuilderSamples
               { Endpoint = endpoint };
             return client;
         }
-
-        public static async Task<List<string>> ReadFileUrl(string urlFile)
-        {
-          ComputerVisionClient client = Authenticate(endpoint, subscriptionKey);
-            // Read text from URL
-            List<string> ocr = new List<string>();
-            var textHeaders = await client.ReadAsync(urlFile);
-            // After the request, get the operation location (operation ID)
-            string operationLocation = textHeaders.OperationLocation;
-            
-
-            // Retrieve the URI where the extracted text will be stored from the Operation-Location header.
-            // We only need the ID and not the full URL
-            const int numberOfCharsInOperationId = 36;
-            string operationId = operationLocation.Substring(operationLocation.Length - numberOfCharsInOperationId);
-
-            // Extract the text
-            ReadOperationResult results;
-            Console.WriteLine($"Extracting text from URL file {Path.GetFileName(urlFile)}...");
-            Console.WriteLine();
-            do
-            {   Thread.Sleep(1000);
-                results = await client.GetReadResultAsync(Guid.Parse(operationId));
-            }
-            while ((results.Status == OperationStatusCodes.Running ||
-                results.Status == OperationStatusCodes.NotStarted));
-
-            // Display the found text.
-            Console.WriteLine();
-            var textUrlFileResults = results.AnalyzeResult.ReadResults;
-            foreach (ReadResult page in textUrlFileResults)
-            {
-                foreach (Line line in page.Lines)
-                {
-                    //Console.WriteLine(line.Text);
-                    ocr.Add(line.Text);
-                }
-            }
-            //Console.WriteLine();
-            return ocr;
-        }
         public static async Task<List<string>> GetOcr(string imageFile)
         {    
             ComputerVisionClient cvClient = Authenticate(endpoint, subscriptionKey);
