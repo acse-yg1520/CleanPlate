@@ -1,8 +1,7 @@
-# Multi-turn prompt
+# Clean Plate Bot
 
-Bot Framework v4 multi-turn prompt bot sample
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to use the prompts classes included in `botbuilder-dialogs`.  This bot will ask for the user's name and age, then store the responses. It demonstrates a multi-turn dialog flow using a text prompt, a number prompt, and state accessors to store and retrieve values.
+This bot has been created using [Bot Framework](https://dev.botframework.com), it contains functions of clean plate detection, bills infomarion detection and score query.
 
 ## Prerequisites
 
@@ -18,12 +17,12 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 - Clone the repository
 
     ```bash
-    git clone https://github.com/Microsoft/botbuilder-samples.git
+    git clone [https://github.com/acse-yg1520/CleanPlate.git]
     ```
 
 - Run the bot from a terminal or from Visual Studio:
 
-  A) From a terminal, navigate to `samples/csharp_dotnetcore/05.multi-turn-prompt`
+  A) From a terminal, navigate to `/CleanPlate`
 
   ```bash
   # run the bot
@@ -34,7 +33,7 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 
   - Launch Visual Studio
   - File -> Open -> Project/Solution
-  - Navigate to `samples/csharp_dotnetcore/05.multi-turn-prompt` folder
+  - Navigate to `/CleanPlate` folder
   - Select `MultiTurnPromptBot.csproj` file
   - Press `F5` to run the project
 
@@ -49,6 +48,7 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 - Launch Bot Framework Emulator
 - File -> Open Bot
 - Enter a Bot URL of `http://localhost:3978/api/messages`
+- Enter the App ID and App password where you can find those information in  `appsettings.json`
 
 ## Interacting with the bot
 
