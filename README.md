@@ -1,7 +1,7 @@
 # Clean Plate Bot
 
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it contains functions of clean plate detection, bills infomarion recognition and score query.
+This bot has been created using [Bot Framework](https://dev.botframework.com), it contains functions of clean plate detection, bills infomation recognition and score query.
 
 ## Prerequisites
 
