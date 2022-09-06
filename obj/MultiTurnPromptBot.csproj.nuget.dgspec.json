@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj": {}
+    "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot\\MultiTurnPromptBot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj": {
+    "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot\\MultiTurnPromptBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj",
+        "projectUniqueName": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot\\MultiTurnPromptBot.csproj",
         "projectName": "MultiTurnPromptBot",
-        "projectPath": "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj",
+        "projectPath": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot\\MultiTurnPromptBot.csproj",
         "packagesPath": "C:\\Users\\t-yunhaoguan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\obj\\",
+        "outputPath": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\t-yunhaoguan\\AppData\\Roaming\\NuGet\\NuGet.Config",

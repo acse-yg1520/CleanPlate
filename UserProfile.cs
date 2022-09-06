@@ -3,7 +3,7 @@
 
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotBuilderSamples
+namespace CleanPlateBot
 {
     /// <summary>
     /// This is our application state. Just a regular serializable .NET class.

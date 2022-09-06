@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Microsoft.BotBuilderSamples
+namespace CleanPlateBot
 {
 
     class predictionApi
@@ -28,13 +28,13 @@ namespace Microsoft.BotBuilderSamples
            };
            return predictionApi;
         }
-        public static async Task<string> GetImagePredictionsAsync(string fileName)
+        public static async Task<string> GetImagePredictionsAsync(string filePath)
         {
-          CustomVisionPredictionClient predictionApi = AuthenticatePrediction(Endpoint, PredictionKey);
+            CustomVisionPredictionClient predictionApi = AuthenticatePrediction(Endpoint, PredictionKey);
             
             // Get predictions from the image
             //using (var imageStream = new FileStream(imageFile, FileMode.Open))
-            using (var imageStream = new MemoryStream(File.ReadAllBytes(Path.Combine(Path.GetTempPath(),  fileName))))
+            using (var imageStream = new MemoryStream(File.ReadAllBytes(filePath)))
             {
                 var results = await predictionApi.ClassifyImageAsync
                     (new Guid(ProjetId), PublishedName, imageStream);

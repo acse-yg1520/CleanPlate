@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "29Xg97TiNncqcmf2oLG/Zt5AQOpJVFPyV3tBIyFu5T7xCCfeSfHue/KWN12uawVL04/Pk9IcgDCxfOV5/nkxSA==",
+  "dgSpecHash": "4L+aWGK4OKegRqNU3Bak4XPKRdSrZbYDlcrjufTAScYNMXDp9wrl5+zTLB7x0WS3kr3bM9r4zj/1XhdAKuGdoQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj",
+  "projectFilePath": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot - Copy\\CleanPlateBot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\t-yunhaoguan\\.nuget\\packages\\azure.core\\1.3.0\\azure.core.1.3.0.nupkg.sha512",
     "C:\\Users\\t-yunhaoguan\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.1\\microsoft.aspnetcore.jsonpatch.3.1.1.nupkg.sha512",

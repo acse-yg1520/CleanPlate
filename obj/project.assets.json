@@ -8456,11 +8456,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj",
-      "projectName": "MultiTurnPromptBot",
-      "projectPath": "c:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\MultiTurnPromptBot.csproj",
+      "projectUniqueName": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot - Copy\\CleanPlateBot.csproj",
+      "projectName": "CleanPlateBot",
+      "projectPath": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot - Copy\\CleanPlateBot.csproj",
       "packagesPath": "C:\\Users\\t-yunhaoguan\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\t-yunhaoguan\\Desktop\\BOTOCR\\obj\\",
+      "outputPath": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot - Copy\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\t-yunhaoguan\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 
-namespace Microsoft.BotBuilderSamples
+namespace CleanPlateBot
 {
     class OCR_api
     {
