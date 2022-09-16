@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "tw8RA/OXYdaJ8LzG5UCmYED4el8gfX/LyAZojer227M=",
+  "Source": "CleanPlateBot",
+  "BasePath": "_content/CleanPlateBot",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "CleanPlateBot\\wwwroot",
+      "Source": "CleanPlateBot",
+      "ContentRoot": "C:\\Users\\weyao\\source\\repos\\Hackthon_CleanPlate\\CleanPlateBot_Complex\\wwwroot\\",
+      "BasePath": "_content/CleanPlateBot",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\weyao\\source\\repos\\Hackthon_CleanPlate\\CleanPlateBot_Complex\\wwwroot\\default.htm",
+      "SourceId": "CleanPlateBot",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\weyao\\source\\repos\\Hackthon_CleanPlate\\CleanPlateBot_Complex\\wwwroot\\",
+      "BasePath": "_content/CleanPlateBot",
+      "RelativePath": "default.htm",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\default.htm"
+    }
+  ]
+}
