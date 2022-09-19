@@ -128,27 +128,29 @@ namespace CleanPlateBot
         private async Task<string> DownloadImage(Attachment attachment, string channel, CancellationToken cancellationToken)
         {
             var client = _clientFactory.CreateClient();
-            var downloadUrl = string.Empty;
-
-            if (channel == Channels.Msteams)
-            {
-                //Teams Channel
-                var fileDownload = JObject.FromObject(attachment.Content).ToObject<FileDownloadInfo>();
-                downloadUrl = fileDownload.DownloadUrl;
-
-            }
-            else if (channel == Channels.Emulator)
-            {
-                //Emulator Channel
-                downloadUrl = attachment.ContentUrl;
-            }
-
-            string filePath = Path.Combine(Path.GetTempPath(), attachment.Name);
+            var fileDownload = JObject.FromObject(attachment.Content).ToObject<FileDownloadInfo>();
+            var downloadUrl = fileDownload.DownloadUrl;
+            //var downloadUrl = attachment.ContentUrl;
             var response = await client.GetAsync(downloadUrl);
-            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+
+            string fileName = string.Empty;
+            if (string.IsNullOrEmpty(attachment.Name) || string.IsNullOrWhiteSpace(attachment.Name))
             {
-                await response.Content.CopyToAsync(fileStream);
+               fileName = $"{Guid.NewGuid().ToString()}.png";
             }
+            else
+            {
+               fileName = attachment.Name;
+            }
+            
+            var filePath = Path.Combine(Path.GetTempPath(), fileName);
+            //string filePath = Path.Combine(Path.GetTempPath(),  attachment.Name);
+            //var response = await client.GetAsync(downloadUrl);
+            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+           {
+                //add memory stream here
+               await response.Content.CopyToAsync(fileStream);
+           }
 
             return filePath;
         }

@@ -85,7 +85,6 @@ namespace CleanPlateBot
             }
             else
             {
-                            //await stepContext.Context.SendActivityAsync(MessageFactory.Text($"your image name is {fileName}"), cancellationToken);
 
                return await stepContext.PromptAsync(nameof(ConfirmPrompt),
                new PromptOptions
@@ -102,24 +101,25 @@ namespace CleanPlateBot
         private async Task<string> DetectionResult(Attachment attachment, string channel, CancellationToken cancellationToken)
         {
             var client = _clientFactory.CreateClient();
-            var downloadUrl = string.Empty;
-
-            if (channel == Channels.Msteams)
+            //var downloadUrl = attachment.ContentUrl;
+            //var response = await client.GetAsync(downloadUrl);
+            var fileDownload = JObject.FromObject(attachment.Content).ToObject<FileDownloadInfo>();
+            var downloadUrl = fileDownload.DownloadUrl;
+            var response = await client.GetAsync(downloadUrl);
+        
+            string fileName = string.Empty;
+            if (string.IsNullOrEmpty(attachment.Name) || string.IsNullOrWhiteSpace(attachment.Name))
             {
-                //Teams Channel
-                var fileDownload = JObject.FromObject(attachment.Content).ToObject<FileDownloadInfo>();
-                downloadUrl = fileDownload.DownloadUrl;
-
+               fileName = $"{Guid.NewGuid().ToString()}.png";
             }
-            else if (channel == Channels.Emulator)
+            else
             {
-                //Emulator Channel
-                downloadUrl = attachment.ContentUrl;
+               fileName = attachment.Name;
             }
             
-
-            string filePath = Path.Combine(Path.GetTempPath(),  attachment.Name);
-            var response = await client.GetAsync(downloadUrl);
+            var filePath = Path.Combine(Path.GetTempPath(), fileName);
+            //string filePath = Path.Combine(Path.GetTempPath(),  attachment.Name);
+            //var response = await client.GetAsync(downloadUrl);
             using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
            {
                 //add memory stream here
@@ -131,8 +131,7 @@ namespace CleanPlateBot
 
         private async Task<DialogTurnResult> ConfirmResultStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            // need to remove after developing stage
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Text("enter ConfirmResultStepAsync"));
+           
             string dialogId = string.Empty;
             var ret = (bool)stepContext.Result;
             if (type.Equals("Clean"))
