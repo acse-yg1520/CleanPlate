@@ -1,11 +1,11 @@
 # Clean Plate Bot
 
 
-This bot has been created using [Bot Framework](https://dev.botframework.com). It contains functions of clean plate detection, bills infomation recognition and score query. This bot can also provide users weekly reports, and users can submit feedback through this bot.
+This bot has been created using [Bot Framework](https://dev.botframework.com). It contains functions of clean plate detection, bills infomation recognition and score query. This bot can also provide weekly report to users about their dietary information. Users can submit feedback to the canteen through this bot.
 
 ## Prerequisites
 
-- [.NET Core SDK](https://dotnet.microsoft.com/download) version 3.1
+- [.NET Core SDK](https://dotnet.microsoft.com/download) version 6.0
 
   ```bash
   # determine dotnet version
