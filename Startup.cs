@@ -35,6 +35,9 @@ namespace CleanPlateBot
             // Create the Conversation state. (Used by the Dialog system itself.)
             services.AddSingleton<ConversationState>();
 
+            // Register Cosmos DB Client
+            services.AddSingleton<CosmosDBClient>();
+
             services.AddSingleton<MainDialog>();
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<MainDialog>>();

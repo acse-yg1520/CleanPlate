@@ -11,17 +11,41 @@ using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Bot.Connector.Authentication;
 
 namespace CleanPlateBot
 {
     public class PlateDetectDialog : ComponentDialog
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly string _msAppId;
+        private readonly string _msAppPassword;
+        private readonly string _predictionEndpoint;
+        private readonly string _predictionKey;
+        private readonly string _predictionProjetId;
+        private readonly string _predictionPublishedName;
+        private readonly string _CosmosEndpoint;
+        private readonly string _PrimaryKey;
+        private readonly CosmosDBClient _cosmosDBClient;
+        
 
-        public PlateDetectDialog(IHttpClientFactory clientFactory)
+
+        public PlateDetectDialog(IHttpClientFactory clientFactory, IConfiguration configuration, CosmosDBClient cosmosDBClient)
             : base(nameof(PlateDetectDialog))
         {
             _clientFactory = clientFactory;
+           _cosmosDBClient = cosmosDBClient;
+            _msAppId = configuration["MicrosoftAppId"];
+            _msAppPassword = configuration["MicrosoftAppPassword"];
+
+            _predictionEndpoint = configuration["PredictionEndpoint"];
+            _predictionKey = configuration["PredictionKey"];
+            _predictionProjetId = configuration["PredictionProjetId"];
+            _predictionPublishedName = configuration["PredictionPublishedName"];
+            _CosmosEndpoint = configuration["CosmosEndpoint"];
+            _PrimaryKey = configuration["PrimaryKey"];
+
             AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt), Helper.ImagePromptValidatorAsync));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new FollowUpDialog());
@@ -52,89 +76,86 @@ namespace CleanPlateBot
             //return await stepContext.NextAsync();
         }
 
-        public string type;
         private async Task<DialogTurnResult> PlateDetectStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // need to remove after developing stage
             //await stepContext.Context.SendActivityAsync(MessageFactory.Text("enter PlateDetectStepAsync"));
-            
+
             var attachment = ((IList<Attachment>)stepContext.Result)?.FirstOrDefault();
-            if ((IList<Attachment>)stepContext.Result == null)
+            if (attachment == null)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("Attachment is empty"));
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("No picture in the attachment"));
                 return await stepContext.EndDialogAsync(null, cancellationToken);
             }
+            
+            var name = stepContext.Context.Activity.From.Name;
+            var id = stepContext.Context.Activity.From.Id;
+            var predictions = await DetectionResult(stepContext, attachment, cancellationToken);
+            stepContext.Values["PredictionResult"] = predictions;
 
-            var predictions = await DetectionResult(
-                 attachment,
-                stepContext.Context.Activity.ChannelId, cancellationToken);
-            type = predictions;
-            if (predictions == "Clean")
-            {   
+            // Store the score if clean plate
+            var score = 0;
+            List<userScore> userScores = await _cosmosDBClient.QueryItemsAsync(id, name, _CosmosEndpoint, _PrimaryKey);
+            if (userScores.Count == 0)
+                {
+                    score = 0;
+                }
+            else
+                {
+                    score = userScores[0].score;
+                }
 
-                //score += 5;
-                await  stepContext.Context.SendActivityAsync("Congratulations! You have finished all the food. Thank you for your contribution to reduce food waste.");
-                //await _cosmosDBClient.AddItemsToContainerAsync(EndpointUri, PrimaryKey, Name, score);
+            if (predictions.Equals("Clean"))
+            {
+                score += 5;
+                await stepContext.Context.SendActivityAsync("Congratulations! You have finished all the food. Thank you for your contribution to reduce food waste.");
+                await _cosmosDBClient.AddItemsToContainerAsync( _CosmosEndpoint, _PrimaryKey, id, name, score);
+
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt),
-               new PromptOptions
-               {
-                   Prompt = MessageFactory.Text("Are you happy with this result?"),
-                   RetryPrompt = MessageFactory.Text("Input invalid. is this result ok?")
-               }, cancellationToken);
-             
+                    new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Are you happy with this result?"),
+                        RetryPrompt = MessageFactory.Text("Input invalid. is this result ok?")
+                    }, cancellationToken);
             }
             else
             {
-
-               return await stepContext.PromptAsync(nameof(ConfirmPrompt),
-               new PromptOptions
-               {
-                   Prompt = MessageFactory.Text("Sorry! It seems that you haven't finished all the food. \n\n To better improve the service, could you answer two follow up questions?"),
-                   RetryPrompt = MessageFactory.Text("Input invalid.")
-               }, cancellationToken);
-                        
-            } 
-
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt),
+                new PromptOptions
+                {
+                    Prompt = MessageFactory.Text("Sorry! It seems that you haven't finished all the food. \n\n To better improve the service, could you answer two follow up questions?"),
+                    RetryPrompt = MessageFactory.Text("Input invalid.")
+                }, cancellationToken);
+            }
             //return await stepContext.NextAsync(null,cancellationToken);
         }
 
-        private async Task<string> DetectionResult(Attachment attachment, string channel, CancellationToken cancellationToken)
+        private async Task<string> DetectionResult(WaterfallStepContext stepContext, Attachment attachment, CancellationToken cancellationToken)
         {
-            var client = _clientFactory.CreateClient();
-            //var downloadUrl = attachment.ContentUrl;
-            //var response = await client.GetAsync(downloadUrl);
-            var fileDownload = JObject.FromObject(attachment.Content).ToObject<FileDownloadInfo>();
-            var downloadUrl = fileDownload.DownloadUrl;
-            var response = await client.GetAsync(downloadUrl);
-        
-            string fileName = string.Empty;
-            if (string.IsNullOrEmpty(attachment.Name) || string.IsNullOrWhiteSpace(attachment.Name))
-            {
-               fileName = $"{Guid.NewGuid().ToString()}.png";
-            }
-            else
-            {
-               fileName = attachment.Name;
-            }
-            
-            var filePath = Path.Combine(Path.GetTempPath(), fileName);
-            //string filePath = Path.Combine(Path.GetTempPath(),  attachment.Name);
-            //var response = await client.GetAsync(downloadUrl);
-            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-           {
-                //add memory stream here
-               await response.Content.CopyToAsync(fileStream);
-            }
-            var predictions = await predictionApi.GetImagePredictionsAsync(filePath);
-            return predictions;
+            var credentialToken = await new MicrosoftAppCredentials(_msAppId, _msAppPassword).GetTokenAsync();
+            var image = await Helper.DownloadImage(
+                                    _clientFactory.CreateClient(),
+                                    credentialToken,
+                                    attachment,
+                                    stepContext.Context.Activity.ChannelId,
+                                    cancellationToken);
+
+            return await Helper.GetImagePredictionsAsync(image, _predictionKey, _predictionEndpoint, _predictionProjetId, _predictionPublishedName);
         }
 
         private async Task<DialogTurnResult> ConfirmResultStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-           
             string dialogId = string.Empty;
             var ret = (bool)stepContext.Result;
-            if (type.Equals("Clean"))
+
+            var predictionResult = (string)stepContext.Values["PredictionResult"];
+            if (predictionResult == null)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("PredictionResult is null"));
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
+
+            if (predictionResult == "Clean")
             {
                 if ((bool)stepContext.Result)// true
                 {
@@ -155,13 +176,11 @@ namespace CleanPlateBot
                 else // false
                 {
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("Sorry to hear that."));
-                    
                 }
-                
+
             }
+
             return await stepContext.EndDialogAsync();
         }
-
-
     }
 }

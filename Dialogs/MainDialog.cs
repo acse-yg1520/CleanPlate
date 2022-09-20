@@ -6,26 +6,24 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
-using Microsoft.Bot.Schema;
-using AdaptiveCards;
-using System.Linq;
-using Newtonsoft.Json.Linq;
-
+using Microsoft.Extensions.Configuration;
 
 namespace CleanPlateBot
 {
     public class MainDialog : ComponentDialog
     {
         private readonly List<string> _choices;
+        private readonly CosmosDBClient _cosmosDBClient;
 
-        public MainDialog(IHttpClientFactory clientFactory)
+        public MainDialog(IHttpClientFactory clientFactory, IConfiguration configuration, CosmosDBClient cosmosDBClient)
             : base(nameof(MainDialog))
         {
             _choices = new List<string> { "Plate Detect", "Upload Bills", "Score Query", "Weekly Report", "Survey" };
+            _cosmosDBClient = cosmosDBClient;
 
-            AddDialog(new PlateDetectDialog(clientFactory));
-            AddDialog(new UploadBillsDialog(clientFactory));
-            AddDialog(new ScoreQueryDialog());
+            AddDialog(new PlateDetectDialog(clientFactory, configuration, cosmosDBClient));
+            AddDialog(new UploadBillsDialog(clientFactory, configuration));
+            AddDialog(new ScoreQueryDialog(configuration, cosmosDBClient));
             AddDialog(new WeeklyReportDialog());
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
@@ -40,11 +38,11 @@ namespace CleanPlateBot
 
             InitialDialogId = nameof(WaterfallDialog);
         }
-        
+
         public string name;
         private async Task<DialogTurnResult> WelcomeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {      
-            
+        {
+
             name = stepContext.Context.Activity.From.Name;
 
             return await stepContext.PromptAsync(nameof(ChoicePrompt),
@@ -54,30 +52,7 @@ namespace CleanPlateBot
                     Choices = ChoiceFactory.ToChoices(_choices),
                     RetryPrompt = MessageFactory.Text("Input invalid! Please select your operation in offering list.")
                 }, cancellationToken);
-            //  await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Hi {name}! What operation would you like to perform?"), cancellationToken);
-            //  var card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0))
-            // {
-            //     // Use LINQ to turn the choices into submit actions
-            //     Actions = _choices.Select(choice => new AdaptiveSubmitAction
-            //     {
-            //         Title = choice,
-            //         Data = choice,  // This will be a string
-            //     }).ToList<AdaptiveAction>(),
-            // };
-            // // Prompt
-            // return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions
-            // {
-            //     Prompt = (Activity)MessageFactory.Attachment(new Attachment
-            //     {
-            //         ContentType = AdaptiveCard.ContentType,
-            //         // Convert the AdaptiveCard to a JObject
-            //         Content = JObject.FromObject(card),
-            //     }),
-            //     Choices = ChoiceFactory.ToChoices(_choices),
-            //     // Don't render the choices outside the card
-            //     Style = ListStyle.None,
-            // },
-            //     cancellationToken);
+
         }
 
         private async Task<DialogTurnResult> TakeOperationStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -110,10 +85,18 @@ namespace CleanPlateBot
                         dialogId = nameof(WeeklyReportDialog);
                         break;
                     }
+                case "Survey":
+                    {
+
+                        Uri ur = new Uri("https://bit.ly/3SdEVAE");
+                        var name = stepContext.Context.Activity.From.Name;
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{name}, thank you for your feedback☺: " + ur), cancellationToken);
+                        return await stepContext.NextAsync(null, cancellationToken);
+                    }
 
                 default:
                     {
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Text("invalid operation"), cancellationToken);
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text("Sorry, this is invalid operation."), cancellationToken);
                         return await stepContext.EndDialogAsync(null, cancellationToken);
                     }
             }
@@ -137,9 +120,9 @@ namespace CleanPlateBot
             }
             else
             {
-                await  stepContext.Context.SendActivityAsync("Thank you for your participation. Have a nice day!☺");
+                await stepContext.Context.SendActivityAsync("Thank you for your participation. Have a nice day!☺");
                 return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
             }
-        } 
+        }
     }
 }

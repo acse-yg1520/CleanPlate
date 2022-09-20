@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "tw8RA/OXYdaJ8LzG5UCmYED4el8gfX/LyAZojer227M=",
+  "Hash": "vnlVYdb1/KZCTlHldoxH7brkor/3RwSmf32iUAV6D5k=",
   "Source": "CleanPlateBot",
   "BasePath": "_content/CleanPlateBot",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "CleanPlateBot\\wwwroot",
       "Source": "CleanPlateBot",
-      "ContentRoot": "C:\\Users\\weyao\\source\\repos\\Hackthon_CleanPlate\\CleanPlateBot_Complex\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\t-yunhaoguan\\Downloads\\CleanPlate\\CleanPlate\\wwwroot\\",
       "BasePath": "_content/CleanPlateBot",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\weyao\\source\\repos\\Hackthon_CleanPlate\\CleanPlateBot_Complex\\wwwroot\\default.htm",
+      "Identity": "C:\\Users\\t-yunhaoguan\\Downloads\\CleanPlate\\CleanPlate\\wwwroot\\default.htm",
       "SourceId": "CleanPlateBot",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\weyao\\source\\repos\\Hackthon_CleanPlate\\CleanPlateBot_Complex\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\t-yunhaoguan\\Downloads\\CleanPlate\\CleanPlate\\wwwroot\\",
       "BasePath": "_content/CleanPlateBot",
       "RelativePath": "default.htm",
       "AssetKind": "All",
@@ -32,6 +32,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\default.htm"
+    },
+    {
+      "Identity": "C:\\Users\\t-yunhaoguan\\Downloads\\CleanPlate\\CleanPlate\\wwwroot\\default.html",
+      "SourceId": "CleanPlateBot",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\t-yunhaoguan\\Downloads\\CleanPlate\\CleanPlate\\wwwroot\\",
+      "BasePath": "_content/CleanPlateBot",
+      "RelativePath": "default.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\default.html"
     }
   ]
 }

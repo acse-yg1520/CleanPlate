@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "y0ndhbxW5a4F3NCooSfbjhnS5wmByd9uXasHJfnpZJnEt1ehOxK6FXF3FkoMW4n60cbvdjY1SBU7lVdxcdOUfw==",
+  "dgSpecHash": "kijv0syJ4CBDPtuleEnUYqrbP1pBL5U0L83t5eMwhSl1J0VTexvMIXSefBHuv6RSf5zAVQe+7gRkq2IJY8Reiw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\t-yunhaoguan\\Desktop\\CleanPlateBot - Copy\\CleanPlateBot\\CleanPlateBot.csproj",
+  "projectFilePath": "C:\\Users\\t-yunhaoguan\\Downloads\\CleanPlate\\CleanPlate\\CleanPlateBot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\t-yunhaoguan\\.nuget\\packages\\adaptivecards\\2.7.3\\adaptivecards.2.7.3.nupkg.sha512",
     "C:\\Users\\t-yunhaoguan\\.nuget\\packages\\azure.core\\1.3.0\\azure.core.1.3.0.nupkg.sha512",
