@@ -1,0 +1,23 @@
+{
+    "type": "AdaptiveCard",
+    "body": [
+        {
+            "type": "TextBlock",
+            "size": "Medium",
+            "weight": "Bolder",
+            "text": "Hi! Welcome to Clean Plate Bot!"
+        },
+        {
+            "type": "Image",
+            "url": "https://i.postimg.cc/Qt2SWrTD/cleanplate-pic.jpg",
+            "altText": "Bot Image"
+          },
+        {
+            "type": "TextBlock",
+            "text": "This bot provides points award and query function for clean plate. You can upload your receipt to record what you eat for each meal. A weekly report about your spending and calory intake every week will be provided. Please type anything to get started. ☺",
+            "wrap": true
+        }
+    ],
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.1"
+}

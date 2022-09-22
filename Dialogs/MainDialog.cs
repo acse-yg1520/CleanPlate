@@ -18,7 +18,7 @@ namespace CleanPlateBot
         public MainDialog(IHttpClientFactory clientFactory, IConfiguration configuration, CosmosDBClient cosmosDBClient)
             : base(nameof(MainDialog))
         {
-            _choices = new List<string> { "Plate Detect", "Upload Bills", "Score Query", "Weekly Report", "Survey" };
+            _choices = new List<string> { "Plate Detect", "Bills Upload", "Points Query", "Weekly Report", "Survey" };
             _cosmosDBClient = cosmosDBClient;
 
             AddDialog(new PlateDetectDialog(clientFactory, configuration, cosmosDBClient));
@@ -42,9 +42,12 @@ namespace CleanPlateBot
         public string name;
         private async Task<DialogTurnResult> WelcomeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-
+            
+            // var welcomeCard = Cards.CreateAdaptiveCardAttachment();
+            // var reply = MessageFactory.Attachment(welcomeCard);
+            // await stepContext.Context.SendActivityAsync(reply, cancellationToken);
             name = stepContext.Context.Activity.From.Name;
-
+            
             return await stepContext.PromptAsync(nameof(ChoicePrompt),
                 new PromptOptions
                 {
@@ -70,12 +73,12 @@ namespace CleanPlateBot
                         dialogId = nameof(PlateDetectDialog);
                         break;
                     }
-                case "Upload Bills":
+                case "Bills Upload":
                     {
                         dialogId = nameof(UploadBillsDialog);
                         break;
                     }
-                case "Score Query":
+                case "Points Query":
                     {
                         dialogId = nameof(ScoreQueryDialog);
                         break;
@@ -88,7 +91,7 @@ namespace CleanPlateBot
                 case "Survey":
                     {
 
-                        Uri ur = new Uri("https://bit.ly/3SdEVAE");
+                        Uri ur = new Uri("https://forms.office.com/r/5v5xXa9PA2");
                         var name = stepContext.Context.Activity.From.Name;
                         await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{name}, thank you for your feedback☺: " + ur), cancellationToken);
                         return await stepContext.NextAsync(null, cancellationToken);
