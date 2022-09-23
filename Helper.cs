@@ -40,7 +40,7 @@ namespace CleanPlateBot
             }
             else
             {
-                await promptContext.Context.SendActivityAsync("No attachments received. Proceeding without a profile picture...");
+                await promptContext.Context.SendActivityAsync("No attachments received.");
 
                 // We can return true from a validator function even if Recognized.Succeeded is false.
                 return false;
@@ -70,7 +70,8 @@ namespace CleanPlateBot
                 response = await client.GetAsync(attachment.ContentUrl);
             }
 
-            var filePath = Path.Combine("Files", $"{Guid.NewGuid().ToString()}.png");
+            //var filePath = Path.Combine("Files", $"{Guid.NewGuid().ToString()}.png");
+            var filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid().ToString()}.png"); 
             using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 //add memory stream here
